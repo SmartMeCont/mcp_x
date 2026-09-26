@@ -1,0 +1,4 @@
+mcp[cli]>=1.28,<2
+websockets
+ddgs
+beautifulsoup4
