@@ -373,7 +373,14 @@ async def run_mcp_bridge(endpoint_url: str):
                         method = request.get("method")
                         req_id = request.get("id")
                         
-                        if method == "tools/list":
+                        if method == "initialize":
+                            params = request.get("params", {})
+                            response = {"jsonrpc": "2.0","id": req_id,"result": {"protocolVersion": params.get("protocolVersion", "2024-11-05"),"capabilities": {"tools": {"listChanged": False}},"serverInfo": {"name": "AdvancedUnifiedToolbox","version": "1.0.0"}}}
+                            await websocket.send(json.dumps(response))
+                            logger.info("MCP initialize handshake completed.")
+                        elif method == "notifications/initialized":
+                            logger.info("MCP client initialization completed.")
+                        elif method == "tools/list":
                             try:
                                 tools_list = await list_available_tools()
                                 response = {"jsonrpc": "2.0", "id": req_id, "result": {"tools": tools_list}}
